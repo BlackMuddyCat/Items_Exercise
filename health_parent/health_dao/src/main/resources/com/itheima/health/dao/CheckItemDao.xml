@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.health.dao.CheckItemDao">
+    <!--查询所有-->
+    <select id="findAll" resultType="com.itheima.health.pojo.CheckItem">
+        select * from t_checkitem
+    </select>
+
+    <!--添加查询项目-->
+    <insert id="add" parameterType="com.itheima.health.pojo.CheckItem">
+       insert into t_checkitem(code,name,sex,age,price,type,remark,attention) values
+       (#{code},#{name},#{sex},#{age},#{price},#{type},#{remark},#{attention})
+    </insert>
+
+    <!--分页查询检查项-->
+    <select id="findByCondition" parameterType="String" resultType="CheckItem">
+        select * From t_checkitem
+        <where>
+            <if test="value != null and value.length > 0">
+                code like #{queryString} or name like #{queryString}
+            </if>
+        </where>
+    </select>
+</mapper>

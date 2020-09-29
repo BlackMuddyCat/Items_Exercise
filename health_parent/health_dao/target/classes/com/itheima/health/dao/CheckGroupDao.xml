@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.health.dao.CheckGroupDao">
+    <!--查询所有检查组-->
+    <select id="findAll" resultType="checkgroup">
+        select * from t_checkgroup
+    </select>
+
+    <!--添加检查组，返回新增加检查组的id-->
+    <insert id="add" parameterType="checkgroup" >
+        <!--selectKey 会将 SELECT LAST_INSERT_ID()的结果放入到传入的model的主键里面，
+          keyProperty 对应的model中的主键的属性名，这里是 user 中的id，因为它跟数据库的主键对应
+          order AFTER 表示 SELECT LAST_INSERT_ID() 在insert执行之后执行,多用与自增主键，
+          BEFORE 表示 SELECT LAST_INSERT_ID() 在insert执行之前执行，这样的话就拿不到主键了，
+          这种适合那种主键不是自增的类型
+        resultType 主键类型 -->
+        /* selectkey 返回最近插入的id；将返回id值放入到传入model（就是CheckGroup）中的id中*/
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            select last_insert_id()
+        </selectKey>
+        insert into t_checkgroup (code, name, helpCode, sex, remark, attention)
+        values( #{code}, #{name}, #{helpCode}, #{sex}, #{remark}, #{attention})
+    </insert>
+
+    <!--添加检查组于检查项的关系-->
+    <insert id="addCheckGroupCheckItem" parameterType="int">
+        insert into t_checkgroup_checkitem (checkitem_id,checkgroup_id) values (#{checkitemId},#{checkGroupId})
+    </insert>
+
+    <!--分页查询-->
+    <select id="findPage" parameterType="string" resultType="checkgroup">
+        select * From t_checkgroup
+        <where>
+            <if test="value != null and value.length > 0">
+                code like #{queryString} or name like #{queryString} or helpCode like #{queryString}
+            </if>
+        </where>
+    </select>
+
+    <!--根据id查询检查组的信息-->
+    <select id="findById"  resultType="checkgroup">
+        select * from t_checkgroup where id=#{id}
+    </select>
+
+    <!--根据检查组的id查询检查项的id-->
+    <select id="findCheckItemIdsByCheckGroupId"  resultType="int">
+        select checkitem_id from t_checkgroup_checkitem where checkgroup_id=#{id}
+    </select>
+
+    <!--更新检查组的信息-->
+    <update id="update" parameterType="checkgroup">
+        update t_checkgroup
+        set
+            code=#{code},
+            name=#{name},
+            helpCode=#{helpCode},
+            sex=#{sex},
+            remark=#{remark},
+            attention=#{attention}
+        where id=#{id}
+    </update>
+
+    <!--删除检查组于检查项原有的关系-->
+    <delete id="deleteCheckGroupCheckItem" parameterType="int">
+        delete from t_checkgroup_checkitem where checkgroup_id=#{id}
+    </delete>
+
+    <!--查询使用当前检查组套餐的id-->
+    <select id="findSetmealCountByCheckGroupId" parameterType="int" resultType="int">
+        select count(1) from t_setmeal_checkgroup where checkgroup_id=#{id}
+    </select>
+
+    <!--删除检查组-->
+    <delete id="deleteById" parameterType="int">
+        delete from t_checkgroup where id=#{id}
+    </delete>
+</mapper>
