@@ -1,16 +1,14 @@
 package com.itheima.health.controller;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.itheima.health.constant.MessageConstant;
 import com.itheima.health.entity.Result;
 import com.itheima.health.pojo.OrderSetting;
 import com.itheima.health.service.OrderSettingService;
 import com.itheima.health.utils.POIUtils;
-import jdk.nashorn.internal.ir.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -19,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author:yintao
@@ -71,5 +70,28 @@ public class OrderSettingController {
             log.error("批量导入失败", e);
         }
         return new Result(false, MessageConstant.IMPORT_ORDERSETTING_FAIL);
+    }
+
+    /**
+     * 通过月份获取预约设置数据
+     * @param month
+     * @return
+     */
+    @GetMapping("/getOrderSettingByMonth")
+    public Result getOrderSettingByMonth(String month){
+        List<Map<String,Integer>> monthData = orderSettingService.getOrderSettingByMonth(month);
+        return new Result(true, MessageConstant.GET_ORDERSETTING_SUCCESS,monthData);
+    }
+
+    /**
+     * 基于日期的预约设置
+     * @param os
+     * @return
+     */
+    @PostMapping("/editNumberByDate")
+    public Result editNumberByDate(@RequestBody OrderSetting os){
+        // 调用服务更新这个日期的设置
+        orderSettingService.editNumberByDate(os);
+        return new Result(true, MessageConstant.ORDERSETTING_SUCCESS);
     }
 }

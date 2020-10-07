@@ -13,6 +13,7 @@
         <module name="health_pojo" />
         <module name="health_service" />
         <module name="health_web" />
+        <module name="springsecurity_demo" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -24,6 +25,7 @@
       <module name="health_pojo" target="1.8" />
       <module name="health_service" target="1.8" />
       <module name="health_web" target="1.8" />
+      <module name="springsecurity_demo" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

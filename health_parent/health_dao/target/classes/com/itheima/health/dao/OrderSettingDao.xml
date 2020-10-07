@@ -18,5 +18,14 @@
         values(#{orderDate}, #{number}, #{reservations})
     </insert>
 
+    <!--根据月份查询预约设置信息-->
+    <select id="getOrderSettingBetween" parameterType="String" resultType="map">
+        select CAST(DATE_FORMAT(orderdate,'%d') as SIGNED) date,
+            number,
+            reservations
+        from t_ordersetting
+        where orderDate between #{startDate} and #{endDate}
+    </select>
+
 
 </mapper>
